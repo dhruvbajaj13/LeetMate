@@ -13,7 +13,6 @@ A Chrome extension that enhances your LeetCode experience by providing personali
   * Provides highly context-aware hints based on both your code *and* the actual test outcomes
 - 🐞 Identifies potential bugs and edge cases, pinpointing issues related to specific failing tests (with advanced hints)
 - ⚡ Suggests code optimizations for better performance or alternative approaches
-- 🎨 Interactive UI overlay with collapsible sections and smooth animations
 - 📋 Well-structured hints with bullet points and clear formatting
 - 🔒 Direct Gemini API integration (no backend server required)
 - Your API key and code/results are sent directly to Google
