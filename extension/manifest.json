@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode Helper",
+  "version": "1.5",
+  "description": "Get personalized hints and code improvement suggestions on LeetCode problems using Gemini AI",
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "images/disabled.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "128": "images/disabled.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["gemini-api.js", "content.js", "testcase.js"],
+      "css": ["overlay.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["monaco-extractor.js", "images/enabled.png", "images/disabled.png"],
+      "matches": ["https://leetcode.com/*"]
+    }
+  ],
+  "author": "Utkarsh Prajapati"
+} 

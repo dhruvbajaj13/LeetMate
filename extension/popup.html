@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode Helper</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2cbb5d;
+      --primary-dark: #28a955;
+      --primary-light: #61D095;
+      --accent-color: #f1c40f;
+      --dark-bg: #1E1E1E;
+      --dark-surface: #2D2D2D;
+      --dark-card: #383838;
+      --dark-border: #454545;
+      --light-text: #E0E0E0;
+      --medium-text: #BBBBBB;
+      --disabled-text: #898989;
+      --error-color: #e74c3c;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      width: 340px;
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--light-text);
+      padding: 16px;
+      line-height: 1.5;
+    }
+    
+    h2, h3, h4 {
+      color: var(--light-text);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    h2 {
+      font-size: 20px;
+    }
+    
+    h3 {
+      font-size: 16px;
+    }
+    
+    p {
+      font-size: 14px;
+      margin-bottom: 16px;
+      color: var(--medium-text);
+    }
+    
+    .status {
+      display: flex;
+      align-items: center;
+      margin: 16px 0;
+      padding: 12px;
+      background-color: var(--dark-surface);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      min-height: 60px;
+    }
+    
+    .status-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 12px;
+      flex-shrink: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .status-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--light-text);
+    }
+    
+    .connected {
+      background-color: var(--primary-color);
+      box-shadow: 0 0 8px var(--primary-color);
+    }
+    
+    .disconnected {
+      background-color: var(--error-color);
+      box-shadow: 0 0 8px var(--error-color);
+    }
+    
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 10px 16px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn:hover {
+      background-color: var(--primary-dark);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn:active {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      transform: translateY(1px);
+    }
+    
+    .btn::after {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+      background-repeat: no-repeat;
+      background-position: 50%;
+      transform: scale(10, 10);
+      opacity: 0;
+      transition: transform .5s, opacity 1s;
+    }
+    
+    .btn:active::after {
+      transform: scale(0, 0);
+      opacity: 0.3;
+      transition: 0s;
+    }
+    
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--disabled-text);
+      text-align: center;
+      padding-top: 16px;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+      opacity: 0.75;
+      animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: translateX(-50%) scaleX(1.5);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 0.5;
+      }
+    }
+
+    .card {
+      margin-top: 16px;
+      padding: 16px;
+      background-color: var(--dark-card);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      min-height: 360px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--medium-text);
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      background-color: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-radius: 4px;
+      font-size: 14px;
+      color: var(--light-text);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(44, 187, 93, 0.25);
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .floating-label {
+      position: absolute;
+      top: 10px;
+      left: 40px;
+      font-size: 14px;
+      color: var(--medium-text);
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+    
+    .input-group input:not(:placeholder-shown) + .floating-label,
+    .input-group input:focus + .floating-label {
+      top: -10px;
+      left: 12px;
+      font-size: 12px;
+      color: var(--primary-color);
+      background-color: var(--dark-card);
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    .input-group .icon {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: var(--medium-text);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    
+    .input-group input {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--medium-text);
+      cursor: pointer;
+      padding: 10px;
+      font-size: 16px;
+    }
+    
+    .toggle-password:hover {
+      color: var(--light-text);
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .tabs::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+      opacity: 0.75;
+      animation: shimmer 3s infinite linear;
+    }
+
+    .tab {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      background-color: transparent;
+      border: none;
+      color: var(--medium-text);
+      transition: all 0.2s ease;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .tab::after {
+      display: none;
+    }
+    
+    .glider {
+      position: absolute;
+      left: 0;
+      top: calc(100% - 3px);
+      height: 4px;
+      background-color: var(--primary-color);
+      transition: transform 0.15s cubic-bezier(0.65, 0, 0.35, 1), width 0.15s cubic-bezier(0.65, 0, 0.35, 1);
+      clip-path: ellipse(50% 50%);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transform: translateZ(0);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    .profile-pic {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      font-size: 24px;
+      color: white;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      background-color: var(--dark-surface);
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--light-text);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex: 1;
+      max-width: 100px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .card .social-link:hover {
+      background-color: var(--dark-card);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .social-link i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .logo i {
+      font-size: 24px;
+      margin-right: 12px;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo h2 {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .social-link i.fa-linkedin {
+      color: #0A66C2;
+    }
+    
+    .social-link i.fa-github {
+      color: #f0f6fc;
+    }
+    
+    .social-link i.fa-link {
+      color: #39E09B;
+    }
+    
+    .fa-google {
+      background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .email-link {
+      display: inline-flex;
+      align-items: center;
+      font-size: 13px;
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      margin-top: 4px;
+    }
+    
+    .email-link:hover {
+      color: var(--primary-light);
+    }
+    
+    .email-link i {
+      margin-right: 6px;
+    }
+    
+    .version-info {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--disabled-text);
+    }
+    
+    .divider {
+      height: 1px;
+      background-color: var(--dark-border);
+      margin: 16px 0;
+    }
+
+    #settings-content .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #about-content .profile-info + p {
+      margin-bottom: 8px;
+    }
+    
+    #about-content .social-links,
+    #about-content .divider {
+      margin-top: 9.85px;
+      margin-bottom: 12px;
+    }
+
+    .card a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .card a:hover {
+      color: var(--primary-light);
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <i class="fa-solid fa-puzzle-piece"></i>
+    <h2>LeetMate - LeetCode Helper</h2>
+  </div>
+  
+  <div class="tabs">
+    <button id="settings-tab" class="tab active">Settings</button>
+    <button id="about-tab" class="tab">About</button>
+    <div class="glider"></div>
+  </div>
+  
+  <div id="settings-content" class="tab-content active">
+    <div class="card">
+      <p style="margin-bottom: 8px;">Get personalized hints on your LeetCode problems using Gemini AI.</p>
+      
+      <div class="status" style="margin: 8px 0; padding: 8px;">
+        <div id="status-icon" class="status-icon disconnected"></div>
+        <div id="status-text" class="status-text">Checking API configuration...</div>
+      </div>
+      
+      <button id="check-connection" class="btn" style="margin-bottom: 12px;">Check Connection</button>
+      
+      <h3 style="margin-top: 12px; margin-bottom: 4px;">API Key Configuration</h3>
+      <div style="min-height: 30px;">
+        <p id="api-key-instruction" style="display: none; margin-bottom: 8px;">
+            Enter your Gemini API key. Need one?
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get your key from Google AI Studio</a>.
+        </p>
+
+        <p id="change-key-instruction" style="display: none; margin-bottom: 8px;">
+            Your API key is configured. You can change it below if needed.
+            (<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" title="Opens Google AI Studio in a new tab">Get a new key</a>)
+        </p>
+      </div>
+      <form id="api-key-form">
+        <div class="input-group">
+            <i class="icon fas fa-key"></i>
+            <input type="password" id="api-key-input" placeholder=" ">
+            <label for="api-key-input" class="floating-label">Gemini API Key</label>
+            <button type="button" id="toggle-api-key-visibility" class="toggle-password">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+        <button type="submit" class="btn">Save API Key</button>
+      </form>
+    </div>
+  </div>
+  
+  <div id="about-content" class="tab-content">
+    <div class="card">
+      <div class="profile-info">
+        <div class="profile-pic">
+          <img src="images/profile.webp" alt="Dhruv Bajaj" class="profile-img">
+        </div>
+        <div>
+          <h3>Dhruv Bajaj</h3>
+          <p style="margin: 0; font-size: 13px;">Full Stack Developer</p>
+        </div>
+      </div>
+      
+      <p>LeetMate is a Chrome extension that uses Gemini AI to provide personalized hints for solving coding problems.</p>
+      
+      <div class="social-links">
+        <a href="https://linkedin.com/in/dhruvbajaj13" target="_blank" class="social-link">
+          <i class="fab fa-linkedin"></i> LinkedIn
+        </a>
+        <a href="https://github.com/dhruvbajaj13" target="_blank" class="social-link">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+        
+      </div>
+      
+      <div class="divider"></div>
+      
+      <p style="margin-bottom: 4px;">Contact:</p>
+      <a id="email-link" href="#" class="email-link">
+        <i class="fas fa-envelope"></i> d4bajaj@gmail.com
+      </a>
+      
+      <div class="version-info">
+        <p id="version-display" style="margin: 0;"></p>
+        <p style="margin: 4px 0 0 0;">© 2025 Dhruv Bajaj. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p style="margin: 0;">Powered by <i class="fab fa-google"></i> Gemini API</p>
+  </div>
+  
+  <script src="gemini-api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html> 
